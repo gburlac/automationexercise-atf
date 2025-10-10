@@ -1,11 +1,23 @@
-Feature: Login
+Feature: UI tests for AutomationExercise
   As a visitor
   I want to see an error for invalid credentials
-
-  @login
+    @ui
+    @login
   Scenario: Invalid login shows error
     Given I am on the home page
     When I navigate to the login page
     And I login with email "fake@example.com" and password "badpass"
     Then I should see an invalid login error
     #And I take a screenshot
+    @ui
+    @search
+  Scenario Outline: Search for products
+    Given I am on the product page
+    When I search for "<product>"
+    Then I should see results for "<product>"
+
+    Examples:
+      | product   |
+      | Men Tshirt|
+      | Sleeveless Dress|
+      | Blue Top  |
