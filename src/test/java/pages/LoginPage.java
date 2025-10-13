@@ -13,7 +13,6 @@ public class LoginPage extends BasePage {
 
     public LoginPage(Page page){
         super(page);
-        // Wait for the login form to be visible before initializing locators
         page.waitForSelector("input[data-qa='login-email']");
         this.email = page.locator("input[data-qa='login-email']");
         this.password = page.locator("input[placeholder='Password']");

@@ -14,7 +14,6 @@ public class DriverManager {
         log.info("Starting Playwright context (headless={}) in thread: {}", headless, Thread.currentThread().getName());
         if (playwright == null) {
             playwright = Playwright.create();
-            // Always load properties from file before reading slowMo and browser
             support.PropertyReader.loadTestProperties();
         }
         // Each thread gets its own browser
@@ -63,7 +62,6 @@ public class DriverManager {
             consentCookie.setPath("/");
             context.addCookies(java.util.List.of(consentCookie));
             log.info("Consent cookie set to prevent popup");
-            // Optionally reload the page to ensure cookie is applied
             newPage.reload();
         } catch (Exception e) {
             log.warn("Could not set consent cookie: {}", e.getMessage());

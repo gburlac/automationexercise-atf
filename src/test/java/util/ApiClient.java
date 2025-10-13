@@ -5,9 +5,6 @@ import io.restassured.response.Response;
 import support.PropertyReader;
 
 public class ApiClient {
-    static {
-        PropertyReader.loadTestProperties();
-    }
 
     static {
         RestAssured.baseURI = PropertyReader.getTestProperty("baseUrlApi");

@@ -10,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PropertyReader {
     private static final Properties properties = new Properties();
 
-    /*
-     * Loads properties from an absolute or relative file path.
-     */
     public static void loadPropertiesFromFile(String filePath) {
         try (InputStream input = new FileInputStream(filePath)) {
             properties.load(input);
@@ -22,18 +19,14 @@ public class PropertyReader {
         }
     }
 
-    /**
-     * Loads properties from the default test properties file.
-     * Usage: PropertyReader.loadTestProperties();
-     */
     public static void loadTestProperties() {
         loadPropertiesFromFile("src/test/resources/config/test.properties");
     }
 
-    /**
-     * Gets a property value from the loaded properties.
-     * Usage: String value = PropertyReader.getTestProperty("someKey");
-     */
+
+//     Gets a property value from the loaded properties.
+//     Usage: String value = PropertyReader.getTestProperty("someKey");
+
     public static String getTestProperty(String key) {
         return getProperty(key);
     }

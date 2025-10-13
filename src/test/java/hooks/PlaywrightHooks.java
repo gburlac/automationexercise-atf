@@ -16,7 +16,6 @@ public class PlaywrightHooks {
 
     @Before
     public void beforeScenario() {
-        // Always load properties before reading headless
         support.PropertyReader.loadTestProperties();
         String headlessStr = support.PropertyReader.getTestProperty("headless");
         boolean headless = true;
@@ -56,7 +55,6 @@ public class PlaywrightHooks {
     public static void afterAll() {
         log.info("Global teardown: shutting down all drivers and writing Allure environment");
         DriverManager.shutdownAll();
-        // Write environment metadata for Allure report (once per run)
         AllureEnvironmentWriter.write();
     }
 }
