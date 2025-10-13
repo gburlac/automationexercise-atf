@@ -23,10 +23,10 @@ public class PropertyReader {
         loadPropertiesFromFile("src/test/resources/config/test.properties");
     }
 
-    /**
-     * Gets a property value from the loaded properties.
-     * Usage: String value = PropertyReader.getTestProperty("someKey");
-     */
+
+//     Gets a property value from the loaded properties.
+//     Usage: String value = PropertyReader.getTestProperty("someKey");
+
     public static String getTestProperty(String key) {
         return getProperty(key);
     }
