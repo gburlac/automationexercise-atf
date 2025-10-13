@@ -16,7 +16,13 @@ public class PlaywrightHooks {
 
     @Before
     public void beforeScenario() {
-        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+        // Always load properties before reading headless
+        support.PropertyReader.loadTestProperties();
+        String headlessStr = support.PropertyReader.getTestProperty("headless");
+        boolean headless = true;
+        if (headlessStr != null && !headlessStr.isEmpty()) {
+            headless = Boolean.parseBoolean(headlessStr);
+        }
         log.info("Starting scenario with headless={} ", headless);
         DriverManager.start(headless);
     }
@@ -24,8 +30,15 @@ public class PlaywrightHooks {
     @After
     public void afterScenario(Scenario scenario) {
         log.info("Finishing scenario: {} - status={}", scenario.getName(), scenario.getStatus());
-        // Attach screenshot on failure
-        if (scenario.isFailed()) {
+        // Read screenshotOnFailure property
+        support.PropertyReader.loadTestProperties();
+        String screenshotOnFailureStr = support.PropertyReader.getTestProperty("screenshotOnFailure");
+        boolean screenshotOnFailure = true;
+        if (screenshotOnFailureStr != null && !screenshotOnFailureStr.isEmpty()) {
+            screenshotOnFailure = Boolean.parseBoolean(screenshotOnFailureStr);
+        }
+        // Attach screenshot on failure if enabled
+        if (scenario.isFailed() && screenshotOnFailure) {
             log.warn("Scenario failed, capturing screenshot");
             try {
                 byte[] screenshot = DriverManager.page().screenshot();

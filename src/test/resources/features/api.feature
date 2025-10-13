@@ -1,4 +1,4 @@
-Feature: AutomationExercise API tests
+Feature: API tests for AutomationExercise
   @api
   @api-get
   Scenario: GET - Retrieve product list

@@ -23,6 +23,9 @@ public class ProductSteps {
 
     @When("I search for {string}")
     public void i_search_for_product(String product) {
+        page = DriverManager.page();
+        productPage = new ProductPage(page);
+        productPage.navigateTo();
         productPage.searchForProduct(product);
         log.info("Searched for product: {}", product);
     }

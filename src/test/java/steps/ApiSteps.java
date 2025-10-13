@@ -6,7 +6,6 @@ import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.FormData;
 import com.microsoft.playwright.options.RequestOptions;
-import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -20,14 +19,13 @@ public class ApiSteps {
     private static Playwright pw;
     private static APIRequestContext api;
     private static APIResponse response;
-    static {
-        PropertyReader.loadProperties("config/test.properties");
-    }
+
 
 
     @Given("the AutomationExercise API is available")
     public void the_api_is_available() {
-        String baseUrl = PropertyReader.getProperty("baseUrlApi");
+        PropertyReader.loadTestProperties();
+        String baseUrl = PropertyReader.getTestProperty("baseUrlApi");
         if (baseUrl == null || baseUrl.isEmpty()) {
             throw new IllegalStateException("baseUrlApi property is not set");
         }
@@ -44,7 +42,7 @@ public class ApiSteps {
 
     @When("I send a GET request to {string}")
     public void i_send_a_get_request_to(String endpoint) {
-        String baseUrl = PropertyReader.getProperty("baseUrlApi");
+        String baseUrl = PropertyReader.getTestProperty("baseUrlApi");
 
         String fullUrl = endpoint.startsWith("http") ? endpoint : baseUrl + (endpoint.startsWith("/") ? endpoint : "/" + endpoint);
         log.info("GET {}", fullUrl);

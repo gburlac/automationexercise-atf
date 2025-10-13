@@ -6,12 +6,11 @@ import support.PropertyReader;
 
 public class ApiClient {
     static {
-        PropertyReader.loadProperties("config/test.properties");
+        PropertyReader.loadTestProperties();
     }
 
-
     static {
-        RestAssured.baseURI = PropertyReader.getProperty("baseUrlApi");
+        RestAssured.baseURI = PropertyReader.getTestProperty("baseUrlApi");
         RestAssured.useRelaxedHTTPSValidation();
     }
 

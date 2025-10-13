@@ -1,5 +1,6 @@
 package support;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,17 +10,32 @@ import lombok.extern.slf4j.Slf4j;
 public class PropertyReader {
     private static final Properties properties = new Properties();
 
-    public static void loadProperties(String propFileName) {
-        try (InputStream input = PropertyReader.class.getClassLoader().getResourceAsStream(propFileName)) {
-            if (input == null) {
-                log.error("Property file '{}' not found in the classpath", propFileName);
-                return;
-            }
+    /*
+     * Loads properties from an absolute or relative file path.
+     */
+    public static void loadPropertiesFromFile(String filePath) {
+        try (InputStream input = new FileInputStream(filePath)) {
             properties.load(input);
-            log.info("Loaded properties from {}", propFileName);
+            log.info("Loaded properties from file: {}", filePath);
         } catch (IOException ex) {
-            log.error("Error loading properties file: {}", ex.getMessage());
+            log.error("Error loading properties file '{}': {}", filePath, ex.getMessage());
         }
+    }
+
+    /**
+     * Loads properties from the default test properties file.
+     * Usage: PropertyReader.loadTestProperties();
+     */
+    public static void loadTestProperties() {
+        loadPropertiesFromFile("src/test/resources/config/test.properties");
+    }
+
+    /**
+     * Gets a property value from the loaded properties.
+     * Usage: String value = PropertyReader.getTestProperty("someKey");
+     */
+    public static String getTestProperty(String key) {
+        return getProperty(key);
     }
 
     public static String getProperty(String key) {

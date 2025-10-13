@@ -6,7 +6,6 @@ import support.PropertyReader;
 public class Hooks {
     @Before(order = 0)
     public void loadProperties() {
-        PropertyReader.loadProperties("config/test.properties");
+        PropertyReader.loadTestProperties();
     }
 }
-
