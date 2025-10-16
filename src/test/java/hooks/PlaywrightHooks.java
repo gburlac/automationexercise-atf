@@ -15,15 +15,20 @@ import java.nio.charset.StandardCharsets;
 public class PlaywrightHooks {
 
     @Before
-    public void beforeScenario() {
+    public void beforeScenario(Scenario scenario) {
         support.PropertyReader.loadTestProperties();
-        String headlessStr = support.PropertyReader.getTestProperty("headless");
-        boolean headless = true;
-        if (headlessStr != null && !headlessStr.isEmpty()) {
-            headless = Boolean.parseBoolean(headlessStr);
+        // Only start browser for @ui scenarios
+        if (scenario.getSourceTagNames().contains("@ui")) {
+            String headlessStr = support.PropertyReader.getTestProperty("headless");
+            boolean headless = true;
+            if (headlessStr != null && !headlessStr.isEmpty()) {
+                headless = Boolean.parseBoolean(headlessStr);
+            }
+            log.info("Starting scenario with headless={} ", headless);
+            DriverManager.start(headless);
+        } else {
+            log.info("Skipping browser startup for non-UI scenario: {}", scenario.getName());
         }
-        log.info("Starting scenario with headless={} ", headless);
-        DriverManager.start(headless);
     }
 
     @After

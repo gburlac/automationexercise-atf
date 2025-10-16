@@ -7,6 +7,8 @@ import support.PropertyReader;
 @Slf4j
 public class HomePage extends BasePage {
     private static final String SIGNUP_LOGIN_LINK = "a[href='/login']";
+    private static final long DEFAULT_TIMEOUT_MS = Long.parseLong(PropertyReader.getTestProperty("defaultTimeoutMs"));
+    private static final long INPUT_TIMEOUT_MS = Long.parseLong(PropertyReader.getTestProperty("inputTimeoutMs"));
 
     public HomePage(Page page){ super(page); }
     public HomePage open(){
@@ -21,19 +23,19 @@ public class HomePage extends BasePage {
     public void goToLogin(){
         log.info("Navigating to login page");
         try {
-            page.waitForSelector(SIGNUP_LOGIN_LINK, new Page.WaitForSelectorOptions().setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE).setTimeout(15000));
+            page.waitForSelector(SIGNUP_LOGIN_LINK, new Page.WaitForSelectorOptions().setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE).setTimeout(DEFAULT_TIMEOUT_MS));
             boolean isEnabled = page.isEnabled(SIGNUP_LOGIN_LINK);
             boolean isVisible = page.isVisible(SIGNUP_LOGIN_LINK);
             log.debug("Login link visible: {}, enabled: {}", isVisible, isEnabled);
             if (!isVisible || !isEnabled) {
                 throw new IllegalStateException("Login link is not visible or not enabled");
             }
-            page.click(SIGNUP_LOGIN_LINK, new Page.ClickOptions().setTimeout(10000));
+            page.click(SIGNUP_LOGIN_LINK, new Page.ClickOptions().setTimeout(DEFAULT_TIMEOUT_MS));
         } catch (Exception e) {
             log.error("Failed to click login link: {}", e.getMessage());
             throw e;
         }
-        page.waitForSelector("input[data-qa='login-email']", new Page.WaitForSelectorOptions().setTimeout(15000));
+        page.waitForSelector("input[data-qa='login-email']", new Page.WaitForSelectorOptions().setTimeout(INPUT_TIMEOUT_MS));
     }
 
     public void handleConsentIfPresent() {

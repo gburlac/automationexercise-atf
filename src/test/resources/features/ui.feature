@@ -5,7 +5,7 @@ Feature: UI tests for AutomationExercise
 
   @ui
   @login
-  Scenario: Invalid login shows error
+  Scenario: UI-1 Invalid login shows error
     Given I am on the home page
     When I navigate to the login page
     And I login with email "fake@example.com" and password "badpass"
@@ -13,7 +13,7 @@ Feature: UI tests for AutomationExercise
 
   @ui
   @search
-  Scenario Outline: Search for products
+  Scenario Outline: UI-2 Search for products
     Given I am on the home page
     When I search for "<product>"
     Then I should see results for "<product>"
