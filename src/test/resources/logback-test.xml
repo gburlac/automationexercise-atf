@@ -9,10 +9,10 @@
 
     <!-- Rolling file appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>target/logs/test-execution.log</file>
+        <file>logs/test-execution.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover, keep 14 days -->
-            <fileNamePattern>target/logs/test-execution.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <fileNamePattern>logs/test-execution.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>14</maxHistory>
         </rollingPolicy>
         <encoder>

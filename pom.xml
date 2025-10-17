@@ -12,9 +12,18 @@
         <playwright.version>1.46.0</playwright.version>
         <allure.version>2.29.0</allure.version>
         <allure.results.directory>C:\traning\automationexercise-atf\target\allure-results</allure.results.directory>
+        <cucumber.filter.tags>@all</cucumber.filter.tags>
+        <headless>true</headless>
     </properties>
 
     <dependencies>
+        <!-- Generex for regex-based test data generation -->
+        <dependency>
+            <groupId>com.github.mifmif</groupId>
+            <artifactId>generex</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Playwright Java -->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
@@ -89,7 +98,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
+            <version>1.4.12</version>
         </dependency>
 
         <!-- Rest-Assured for API Testing -->
@@ -98,17 +107,39 @@
             <artifactId>rest-assured</artifactId>
             <version>5.4.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-path</artifactId>
             <version>5.4.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>xml-path</artifactId>
-            <version>5.4.0</version>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.14.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
