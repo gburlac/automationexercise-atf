@@ -9,11 +9,17 @@ import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.Assertions;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.util.*;
 
 public class DbCrudSteps {
     private Connection connection;
+    private List<Integer> importedEmployeeIds = new ArrayList<>();
+    private List<String> importedEmployeeNames = new ArrayList<>();
+    private List<String> importedEmployeeLastNames = new ArrayList<>();
 
     @Given("I connect to the database")
     public void i_connect_to_the_database() throws SQLException {
@@ -99,6 +105,72 @@ public class DbCrudSteps {
                 Assertions.assertFalse(rs.next(), "Employee should not exist after delete");
             }
         }
+    }
+
+    @Given("I generate a CSV file {string} with {int} employees using id method {string}, first name method {string}, and last name method {string}")
+    public void generate_csv_file(String csvFile, int rowCount, String idMethod, String firstNameMethod, String lastNameMethod) throws IOException {
+        importedEmployeeIds.clear();
+        importedEmployeeNames.clear();
+        importedEmployeeLastNames.clear();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+            writer.write("employee_id,emp_firstname,emp_lastname\n");
+            for (int i = 0; i < rowCount; i++) {
+                int id = db.TestDataGenerators.invokeInt(idMethod);
+                String firstName = db.TestDataGenerators.invokeString(firstNameMethod);
+                String lastName = db.TestDataGenerators.invokeString(lastNameMethod);
+                importedEmployeeIds.add(id);
+                importedEmployeeNames.add(firstName);
+                importedEmployeeLastNames.add(lastName);
+                writer.write(id + "," + firstName + "," + lastName + "\n");
+            }
+        }
+    }
+
+    @When("I import the CSV file {string} into the hs_hr_employee table")
+    public void import_csv_to_db(String csvFile) throws SQLException, IOException {
+        if (connection == null || connection.isClosed()) {
+            connection = db.TestDbConnection.getConnection();
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+            String header = reader.readLine(); // skip header
+            String line;
+            String sql = "INSERT INTO hs_hr_employee (employee_id, emp_firstname, emp_lastname) VALUES (?, ?, ?)";
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                String firstName = parts[1];
+                String lastName = parts[2];
+                try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                    stmt.setInt(1, id);
+                    stmt.setString(2, firstName);
+                    stmt.setString(3, lastName);
+                    stmt.setQueryTimeout(db.TestDbConnection.getQueryTimeout() / 1000);
+                    stmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    @Then("I verify {int} employees exist in the database for the imported ids, first names, and last names")
+    public void verify_imported_employees(int expectedCount) throws SQLException {
+        Assertions.assertEquals(expectedCount, importedEmployeeIds.size(), "Imported employee count should match");
+        String sql = "SELECT emp_firstname, emp_lastname FROM hs_hr_employee WHERE employee_id = ?";
+        int found = 0;
+        for (int i = 0; i < importedEmployeeIds.size(); i++) {
+            int id = importedEmployeeIds.get(i);
+            String expectedFirstName = importedEmployeeNames.get(i);
+            String expectedLastName = importedEmployeeLastNames.get(i);
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                stmt.setQueryTimeout(db.TestDbConnection.getQueryTimeout() / 1000);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next() && expectedFirstName.equals(rs.getString(1)) && expectedLastName.equals(rs.getString(2))) {
+                        found++;
+                    }
+                }
+            }
+        }
+        Assertions.assertEquals(expectedCount, found, "All imported employees should exist in DB");
     }
 
     @After
