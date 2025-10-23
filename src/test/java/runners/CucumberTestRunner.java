@@ -12,6 +12,7 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@api or @ui or @db")  // Change tags as needed
+//@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@db_csv_import")  // Change tags as needed
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report.html, json:target/cucumber.json, io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "steps,hooks")
 //@ConfigurationParameter(key = SNIPPET_TYPE_PROPERTY_NAME, value = "CAMELCASE")

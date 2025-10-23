@@ -1,19 +1,26 @@
 package steps;
 
-import db.TestDbConnection;
-import db.TestDataGenerators;
 import db.DynamicRegexContext;
 import db.RegexDataGenerator;
-import io.cucumber.java.en.*;
+import db.TestDataGenerators;
+import db.TestDbConnection;
 import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbCrudSteps {
     private Connection connection;
@@ -173,6 +180,25 @@ public class DbCrudSteps {
         Assertions.assertEquals(expectedCount, found, "All imported employees should exist in DB");
     }
 
+    @And("I delete the imported employees from the hs_hr_employee table")
+    public void delete_imported_employees() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = db.TestDbConnection.getConnection();
+        }
+        String sql = "DELETE FROM hs_hr_employee WHERE employee_id = ?";
+        for (int id : importedEmployeeIds) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                stmt.setQueryTimeout(db.TestDbConnection.getQueryTimeout() / 1000);
+                stmt.executeUpdate();
+            }
+        }
+        importedEmployeeIds.clear();
+        importedEmployeeNames.clear();
+        importedEmployeeLastNames.clear();
+    }
+
+
     @After
     public void afterDbScenario(Scenario scenario) {
         StringBuilder data = new StringBuilder();
@@ -180,7 +206,13 @@ public class DbCrudSteps {
         data.append("employeeName=").append(DynamicRegexContext.get("employeeName")).append('\n');
         data.append("updatedEmployeeName=").append(DynamicRegexContext.get("updatedEmployeeName")).append('\n');
         Allure.getLifecycle().addAttachment("DB Generated Data", "text/plain", "txt", data.toString().getBytes(StandardCharsets.UTF_8));
-        if (connection != null) { try { connection.close(); } catch (Exception ignored) {} connection = null; }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (Exception ignored) {
+            }
+            connection = null;
+        }
         RegexDataGenerator.clearCache();
         DynamicRegexContext.clear();
     }
