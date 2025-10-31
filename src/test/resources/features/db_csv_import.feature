@@ -13,5 +13,5 @@ Feature: Bulk Employee Import via CSV for OrangeHRM
     And I delete the imported employees from the hs_hr_employee table
 
     Examples:
-      | rowCount | csvFile        | idMethod       | firstNameMethod | lastNameMethod   |
-      | 5        | employees.csv  | employeeId     | employeeName    | employeeSurname  |
+      | rowCount | csvFile       | idMethod        | firstNameMethod   | lastNameMethod       |
+      | 5        | employees.csv | employeeIdFaker | employeeNameFaker | employeeSurnameFaker |

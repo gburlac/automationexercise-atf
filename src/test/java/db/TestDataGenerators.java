@@ -25,6 +25,16 @@ public class TestDataGenerators {
     public static String updatedEmployeeNameAlt() { return RegexDataGenerator.generate(PROPS.getProperty("updatedEmployeeNameAlt")); }
     public static String employeeSurname() { return RegexDataGenerator.generate(PROPS.getProperty("employeeSurname")); }
 
+    public static int employeeIdFaker() {
+        return Integer.parseInt(new com.github.javafaker.Faker().number().digits(6));
+    }
+    public static String employeeNameFaker() {
+        return new com.github.javafaker.Faker().name().firstName();
+    }
+    public static String employeeSurnameFaker() {
+        return new com.github.javafaker.Faker().name().lastName();
+    }
+
     // Generic reflection-based invokers
     public static int invokeInt(String methodName) {
         try {
